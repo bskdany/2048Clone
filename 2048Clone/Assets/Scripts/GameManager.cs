@@ -131,12 +131,16 @@ public class GameManager : MonoBehaviour
     {   
         //tile in spawned
         GameObject tile = Instantiate(tileType);
+        Player tileScript = tile.GetComponent<Player>();
+        int tileValue = tileScript.tileValue;
         //new position is set
         boardManager = boardManagerObject.GetComponent<BoardManager>();
         tile.transform.position = boardManager.getSpawnablePosition();
 
+        boardManager.occupyPosition(tile.transform.position, tileValue);
+        
         currentTile = tile.GetComponent<Player>();
-        currentTile.tileValue = 2;
+        currentTile.tileValue = tileValue;
         //added to the list of tiles
         tileList.Add(tile);
     }
