@@ -96,4 +96,36 @@ public class BoardManager : MonoBehaviour
         }
         Debug.Log(sb.ToString());
     }
+
+    public bool isGameOver()
+    {   
+        for (int yPos = 0; yPos < 5; yPos++)
+        {
+            for (int xPos = 0; xPos < 5; xPos++)
+            {
+                if (boardArray[yPos, xPos] != -1)
+                {
+                    int tileValue = boardArray[yPos, xPos];
+                    if(tileValue== boardArray[yPos+1, xPos] || boardArray[yPos + 1, xPos] == 0)
+                    {
+                        return false;
+                    }
+                    if (tileValue == boardArray[yPos-1, xPos] || boardArray[yPos + 1, xPos] == 0)
+                    {
+                        return false;
+                    }
+                    if (tileValue == boardArray[yPos, xPos+1] || boardArray[yPos + 1, xPos] == 0)
+                    {
+                        return false;
+                    }
+                    if (tileValue == boardArray[yPos, xPos-1] || boardArray[yPos + 1, xPos] == 0)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
 }

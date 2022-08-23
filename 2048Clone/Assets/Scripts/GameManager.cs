@@ -81,7 +81,11 @@ public class GameManager : MonoBehaviour
         {
             if (checkIfMovementFinished())
             {
-                gameOverScreen.GetComponent<GameOverScreen>().Setup(gameScore);
+                if (boardManager.GetComponent<BoardManager>().isGameOver())
+                {
+                    gameOverScreen.GetComponent<GameOverScreen>().Setup(gameScore);
+                }
+                
                 canTakeInput = true;
                 isMoving = false;
                 if (hasAnyMovementHappened)
