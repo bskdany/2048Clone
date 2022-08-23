@@ -1735,13 +1735,14 @@ GameObject:
   - component: {fileID: 676085401}
   - component: {fileID: 676085403}
   - component: {fileID: 676085402}
+  - component: {fileID: 676085404}
   m_Layer: 5
   m_Name: GG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &676085401
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1802,6 +1803,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 676085400}
   m_CullTransparentMesh: 1
+--- !u!114 &676085404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 676085400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b0d85f5bc472d45a79020d734653dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &681901899
 GameObject:
   m_ObjectHideFlags: 0
@@ -2028,7 +2041,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 309fbf9edc786f64a95c883e29e3bcce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointsText: {fileID: 0}
 --- !u!1 &971086634
 GameObject:
   m_ObjectHideFlags: 0
@@ -2157,7 +2169,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 972050003}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 676085404}
+        m_TargetAssemblyTypeName: GG, Assembly-CSharp
+        m_MethodName: restartButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &972050003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2506,6 +2530,7 @@ MonoBehaviour:
   tile1024: {fileID: 1932425266850667368, guid: b0628799136697842a026380b25bbad7, type: 3}
   tile2048: {fileID: 4530679318180705710, guid: 615674a659e749142be9563ef5f909d6, type: 3}
   gameOverScreen: {fileID: 858246759}
+  ggScript: {fileID: 676085404}
   boardManagerObject: {fileID: 649721374}
 --- !u!4 &1815691288
 Transform:
