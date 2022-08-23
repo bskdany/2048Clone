@@ -1,14 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
 
-    float moveSpeed = 0.1f;
+    float moveSpeed = 0.2f;
     public bool startMove = false;
     public int tileValue;
     float deltaMove = 0f;

@@ -1,7 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameOverScreen : MonoBehaviour
+public class GG : MonoBehaviour
 {
     public void Setup()
     {
@@ -12,5 +14,4 @@ public class GameOverScreen : MonoBehaviour
     {
         SceneManager.LoadScene("SampleScene");
     }
-
 }

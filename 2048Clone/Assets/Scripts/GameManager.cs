@@ -1,14 +1,5 @@
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.Tilemaps;
-using UnityEngine.WSA;
-using static UnityEditor.Progress;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -26,6 +17,7 @@ public class GameManager : MonoBehaviour
     public GameObject tile2048;
 
     public GameOverScreen gameOverScreen;
+    public GG ggScript;
 
     public GameObject boardManagerObject;
     private BoardManager boardManager;
@@ -42,7 +34,6 @@ public class GameManager : MonoBehaviour
     bool isMoving = false;
     bool hasAnyMovementHappened;
     string directionOfMovement = "";
-    int gameScore;
 
     void Start()
     {
@@ -83,7 +74,7 @@ public class GameManager : MonoBehaviour
             {
                 if (boardManager.GetComponent<BoardManager>().isGameOver())
                 {
-                    gameOverScreen.GetComponent<GameOverScreen>().Setup(gameScore);
+                    gameOverScreen.GetComponent<GameOverScreen>().Setup();
                 }
                 
                 canTakeInput = true;
@@ -98,8 +89,8 @@ public class GameManager : MonoBehaviour
                         Destroy(tile);
                     }
 
-                    boardManager = boardManagerObject.GetComponent<BoardManager>();
-                    boardManager.printBoardArray();
+                    //boardManager = boardManagerObject.GetComponent<BoardManager>();
+                    //boardManager.printBoardArray();
 
                     int randomNumber = Random.Range(0, 1);
                     if (randomNumber == 0)
@@ -350,6 +341,11 @@ public class GameManager : MonoBehaviour
 
                 tilesToRemove.Add(tile);
                 mergedTiles.Add(tile1);
+
+                if(nextIndex == 10)
+                {
+                    ggScript.Setup();
+                }
             }
         }
         foreach(GameObject tile in mergedTiles)
