@@ -72,6 +72,9 @@ public class GameManager : MonoBehaviour
         {
             if (checkIfMovementFinished())
             {
+                //boardManager = boardManagerObject.GetComponent<BoardManager>();
+                //boardManager.printBoardArray();
+
                 if (boardManager.GetComponent<BoardManager>().isGameOver())
                 {
                     gameOverScreen.GetComponent<GameOverScreen>().Setup();
@@ -89,8 +92,7 @@ public class GameManager : MonoBehaviour
                         Destroy(tile);
                     }
 
-                    //boardManager = boardManagerObject.GetComponent<BoardManager>();
-                    //boardManager.printBoardArray();
+                    
 
                     int randomNumber = Random.Range(0, 1);
                     if (randomNumber == 0)

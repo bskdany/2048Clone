@@ -106,15 +106,15 @@ public class BoardManager : MonoBehaviour
                     {
                         return false;
                     }
-                    if (tileValue == boardArray[yPos-1, xPos] || boardArray[yPos + 1, xPos] == 0)
+                    if (tileValue == boardArray[yPos-1, xPos] || boardArray[yPos - 1, xPos] == 0)
                     {
                         return false;
                     }
-                    if (tileValue == boardArray[yPos, xPos+1] || boardArray[yPos + 1, xPos] == 0)
+                    if (tileValue == boardArray[yPos, xPos+1] || boardArray[yPos, xPos+1] == 0)
                     {
                         return false;
                     }
-                    if (tileValue == boardArray[yPos, xPos-1] || boardArray[yPos + 1, xPos] == 0)
+                    if (tileValue == boardArray[yPos, xPos-1] || boardArray[yPos, xPos-1] == 0)
                     {
                         return false;
                     }
