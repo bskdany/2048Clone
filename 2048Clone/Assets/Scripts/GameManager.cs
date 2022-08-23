@@ -38,7 +38,9 @@ public class GameManager : MonoBehaviour
 
     bool canTakeInput = true;
     bool isMoving = false;
+    bool hasAnyMovementHappened;
     string directionOfMovement = "";
+    int gamePoints;
 
     void Start()
     {
@@ -76,29 +78,33 @@ public class GameManager : MonoBehaviour
         if(!canTakeInput && isMoving)
         {
             if (checkIfMovementFinished())
-            {
+            {   
                 canTakeInput = true;
                 isMoving = false;
-                mergeTiles();
-
-                foreach (GameObject tile in tilesToRemove)
+                if (hasAnyMovementHappened)
                 {
-                    tileList.Remove(tile);
-                    Destroy(tile);
+                    mergeTiles();
+
+                    foreach (GameObject tile in tilesToRemove)
+                    {
+                        tileList.Remove(tile);
+                        Destroy(tile);
+                    }
+
+                    boardManager = boardManagerObject.GetComponent<BoardManager>();
+                    boardManager.printBoardArray();
+
+                    int randomNumber = Random.Range(0, 1);
+                    if (randomNumber == 0)
+                    {
+                        spawnTile(tile2);
+                    }
+                    else
+                    {
+                        spawnTile(tile4);
+                    }
                 }
                 
-                boardManager = boardManagerObject.GetComponent<BoardManager>();
-                boardManager.printBoardArray();
-
-                int randomNumber = Random.Range(0, 1);
-                if (randomNumber == 0)
-                {
-                    spawnTile(tile2);
-                }
-                else
-                {
-                    spawnTile(tile4);
-                }
             }
         }
     }
@@ -148,7 +154,7 @@ public class GameManager : MonoBehaviour
     void moveTiles()
     {
         isMoving = true;
-
+        hasAnyMovementHappened = false;
         boardManager = boardManagerObject.GetComponent<BoardManager>();
 
         //objects lists are cleared
@@ -202,6 +208,7 @@ public class GameManager : MonoBehaviour
 
             int[] tileMovementData = calculateTileMovement(tileToUse, tileValue);
             int howManyBlocksToMove = tileMovementData[0];
+        
             bool mergeTiles;
             if (tileMovementData[1] == 1)
             {
@@ -210,6 +217,11 @@ public class GameManager : MonoBehaviour
             else
             {
                 mergeTiles = false;
+            }
+
+            if (howManyBlocksToMove > 0 || mergeTiles)
+            {
+                hasAnyMovementHappened = true;
             }
 
             boardManager.freePosition(tileToUse.transform.position);
@@ -352,4 +364,5 @@ public class GameManager : MonoBehaviour
         }
         return movementFinished;
     }
+
 }
