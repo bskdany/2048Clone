@@ -25,6 +25,8 @@ public class GameManager : MonoBehaviour
     public GameObject tile1024;
     public GameObject tile2048;
 
+    public GameOverScreen gameOverScreen;
+
     public GameObject boardManagerObject;
     private BoardManager boardManager;
     private Player currentTile;
@@ -40,7 +42,7 @@ public class GameManager : MonoBehaviour
     bool isMoving = false;
     bool hasAnyMovementHappened;
     string directionOfMovement = "";
-    int gamePoints;
+    int gameScore;
 
     void Start()
     {
@@ -78,7 +80,8 @@ public class GameManager : MonoBehaviour
         if(!canTakeInput && isMoving)
         {
             if (checkIfMovementFinished())
-            {   
+            {
+                gameOverScreen.GetComponent<GameOverScreen>().Setup(gameScore);
                 canTakeInput = true;
                 isMoving = false;
                 if (hasAnyMovementHappened)
