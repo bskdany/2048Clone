@@ -72,8 +72,8 @@ public class GameManager : MonoBehaviour
         {
             if (checkIfMovementFinished())
             {
-                //boardManager = boardManagerObject.GetComponent<BoardManager>();
-                //boardManager.printBoardArray();
+                boardManager = boardManagerObject.GetComponent<BoardManager>();
+                
 
                 if (boardManager.GetComponent<BoardManager>().isGameOver())
                 {
@@ -103,6 +103,7 @@ public class GameManager : MonoBehaviour
                     {
                         spawnTile(tile4);
                     }
+                    //boardManager.printBoardArray();
                 }
                 
             }
@@ -208,7 +209,7 @@ public class GameManager : MonoBehaviour
 
             int[] tileMovementData = calculateTileMovement(tileToUse, tileValue);
             int howManyBlocksToMove = tileMovementData[0];
-        
+
             bool mergeTiles;
             if (tileMovementData[1] == 1)
             {
@@ -237,6 +238,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
+                boardManager.occupyPosition(new Vector3(tileToUse.transform.position.x + xPos * (howManyBlocksToMove+1), tileToUse.transform.position.y + yPos * (howManyBlocksToMove+1), 0), tileValue+1);
                 tilesToRemove.Add(tileToUse);
             }
             currentTile = tileToUse.GetComponent<Player>();
