@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net.WebSockets;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -20,12 +21,11 @@ public class GameManager : MonoBehaviour
     public GG ggScript;
 
     public GameObject boardManagerObject;
-    private BoardManager boardManager;
-    private Player currentTile;
 
     List<GameObject> tileList = new List<GameObject>();
     List<GameObject> tileListCopy = new List<GameObject>();
     List<GameObject> tilesToRemove = new List<GameObject>();
+    List<Vector3> postionsToDestroy = new List<Vector3>();
 
     int[] tileValueScale = new int[] {2,4,8,16,32,64,128,256,512,1024,2048};
     GameObject[] tileObjectScale;
@@ -59,41 +59,36 @@ public class GameManager : MonoBehaviour
     }
 
     void Update()
-    {
+    {   
+        //input can be taken only one time
         if (canTakeInput)
         {
             takeInput();
         }
+        //if input is taken and the tiles arent moving
         if (!canTakeInput && !isMoving)
         {
             moveTiles();
         }
+
+        //if input is taken and tiles are moving
         if(!canTakeInput && isMoving)
-        {
+        {   
+            //checks if tile movement has finished
             if (checkIfMovementFinished())
             {
-                boardManager = boardManagerObject.GetComponent<BoardManager>();
-                
-
-                if (boardManager.GetComponent<BoardManager>().isGameOver())
-                {
+                //checks if game is over
+                if (boardManagerObject.GetComponent<BoardManager>().isGameOver())
+                {   
+                    //if game is over the game over image is displayed
                     gameOverScreen.GetComponent<GameOverScreen>().Setup();
                 }
                 
-                canTakeInput = true;
-                isMoving = false;
                 if (hasAnyMovementHappened)
                 {
                     mergeTiles();
 
-                    foreach (GameObject tile in tilesToRemove)
-                    {
-                        tileList.Remove(tile);
-                        Destroy(tile);
-                    }
-
-                    
-
+                    //new tile is spawned
                     int randomNumber = Random.Range(0, 1);
                     if (randomNumber == 0)
                     {
@@ -103,9 +98,13 @@ public class GameManager : MonoBehaviour
                     {
                         spawnTile(tile4);
                     }
-                    //boardManager.printBoardArray();
+
+                    boardManagerObject.GetComponent<BoardManager>().printBoardArray();
                 }
-                
+
+                //bools are reinitialized
+                canTakeInput = true;
+                isMoving = false;
             }
         }
     }
@@ -138,16 +137,14 @@ public class GameManager : MonoBehaviour
     {   
         //tile in spawned
         GameObject tile = Instantiate(tileType);
-        Player tileScript = tile.GetComponent<Player>();
-        int tileValue = tileScript.tileValue;
-        //new position is set
-        boardManager = boardManagerObject.GetComponent<BoardManager>();
-        tile.transform.position = boardManager.getSpawnablePosition();
-
-        boardManager.occupyPosition(tile.transform.position, tileValue);
+        int tileValue = tile.GetComponent<Player>().tileValue;
         
-        currentTile = tile.GetComponent<Player>();
-        currentTile.tileValue = tileValue;
+        //new position is set
+        tile.transform.position = boardManagerObject.GetComponent<BoardManager>().getSpawnablePosition();
+
+        //position is occupied in board array
+        boardManagerObject.GetComponent<BoardManager>().occupyPosition(tile.transform.position, tileValue);
+        
         //added to the list of tiles
         tileList.Add(tile);
     }
@@ -156,7 +153,6 @@ public class GameManager : MonoBehaviour
     {
         isMoving = true;
         hasAnyMovementHappened = false;
-        boardManager = boardManagerObject.GetComponent<BoardManager>();
 
         //objects lists are cleared
         tileListCopy.Clear();
@@ -170,7 +166,8 @@ public class GameManager : MonoBehaviour
 
         int tileCounter = 0;
         while (tileCounter < tileList.Count)
-        {
+        {   
+            //gets the tile closest to the wall in the direction of movement
             GameObject tileToUse = tileListCopy[0];
             foreach (GameObject tile in tileListCopy)
             {
@@ -204,9 +201,11 @@ public class GameManager : MonoBehaviour
                         break;
                 }
             }
-            Player tileScript = tileToUse.GetComponent<Player>();
-            int tileValue = tileScript.tileValue;
+            
+            //get the value of the tile to use
+            int tileValue = tileToUse.GetComponent<Player>().tileValue;
 
+            //tile movement is calculated
             int[] tileMovementData = calculateTileMovement(tileToUse, tileValue);
             int howManyBlocksToMove = tileMovementData[0];
 
@@ -225,27 +224,32 @@ public class GameManager : MonoBehaviour
                 hasAnyMovementHappened = true;
             }
 
-            boardManager.freePosition(tileToUse.transform.position);
+            //tile position is freed on the array
+            boardManagerObject.GetComponent<BoardManager>().freePosition(tileToUse.transform.position);
 
             int xPos = 0;
             int yPos = 0;
             int[] convertedDataArray = directionNameToXY(directionOfMovement);
             xPos = convertedDataArray[0];
             yPos = convertedDataArray[1];
+            
             if (!mergeTiles)
-            {
-                boardManager.occupyPosition(new Vector3(tileToUse.transform.position.x + xPos * howManyBlocksToMove, tileToUse.transform.position.y + yPos * howManyBlocksToMove, 0), tileValue);
+            {   
+                //position where the tile will be moved is occupied
+                boardManagerObject.GetComponent<BoardManager>().occupyPosition(new Vector3(tileToUse.transform.position.x + xPos * howManyBlocksToMove, tileToUse.transform.position.y + yPos * howManyBlocksToMove, 0), tileValue);
             }
             else
-            {
-                boardManager.occupyPosition(new Vector3(tileToUse.transform.position.x + xPos * (howManyBlocksToMove+1), tileToUse.transform.position.y + yPos * (howManyBlocksToMove+1), 0), tileValue+1);
+            {   
+                //position where the tile will be moved + 1 is occupied with a non existing value
+                boardManagerObject.GetComponent<BoardManager>().occupyPosition(new Vector3(tileToUse.transform.position.x + xPos * (howManyBlocksToMove), tileToUse.transform.position.y + yPos * (howManyBlocksToMove), 0), tileValue+1);
+                //the current tile will be deleted
                 tilesToRemove.Add(tileToUse);
             }
-            currentTile = tileToUse.GetComponent<Player>();
-            currentTile.activateTileMovement(directionOfMovement, howManyBlocksToMove);
+
+            //the movement is activated
+            tileToUse.GetComponent<Player>().activateTileMovement(directionOfMovement, howManyBlocksToMove); ;
 
             tileListCopy.Remove(tileToUse);
-
             tileCounter++;
         }
     }
@@ -253,8 +257,10 @@ public class GameManager : MonoBehaviour
     int[] calculateTileMovement(GameObject tile, int tileValue)
     {
         List<int> blockValuesInDirection = new List<int>();
-        blockValuesInDirection = boardManager.getTilesInDirection(tile.transform.position, directionOfMovement);
+        blockValuesInDirection = boardManagerObject.GetComponent<BoardManager>().getTilesInDirection(tile.transform.position, directionOfMovement);
 
+        //calculates how many boxes the tile has to move
+        //calculates if the tile should merge or not
         int howManyBoxToMove = 0;
         int mergeTile = 0;
         bool checkForMerge = true;
@@ -267,16 +273,10 @@ public class GameManager : MonoBehaviour
             else if (blockValue != tileValue)
             {
                 checkForMerge = false;
-            }
+            } 
             else if(blockValue == tileValue && checkForMerge){
-                if (mergeTile == 1)
-                {
-                    mergeTile = 0;
-                }
-                else
-                {
-                    mergeTile = 1;
-                }
+                mergeTile = 1;
+                howManyBoxToMove++;
             }
         }
         int[] toReturn;
@@ -310,38 +310,43 @@ public class GameManager : MonoBehaviour
     
     void mergeTiles()
     {
-        int xPos;
-        int yPos;
-        int[] convertedDirection;
-        convertedDirection = directionNameToXY(directionOfMovement);
-        xPos = convertedDirection[0];
-        yPos = convertedDirection[1];
+        postionsToDestroy.Clear();
 
-        List<Vector3> postionsToDestroy = new List<Vector3>();
-
+        //positions of tiles that moved and should merge are added to the list
         foreach (GameObject tile in tilesToRemove)
         {
-            postionsToDestroy.Add(new Vector3(tile.transform.position.x+xPos, tile.transform.position.y + yPos,0));
+            postionsToDestroy.Add(new Vector3(tile.transform.position.x, tile.transform.position.y,0));
+            tileList.Remove(tile);
+            Destroy(tile);
         }
 
-        List<GameObject> mergedTiles = new List<GameObject>();
-        foreach (GameObject tile in tileList)
+        
+
+        int a = 0;
+        foreach (Vector3 b in postionsToDestroy)
         {
+            a += 1;
+        }
+        Debug.Log(a.ToString());
+
+        //list of new tiles that are created after merging
+        List<GameObject> mergedTiles = new List<GameObject>();
+
+        foreach (GameObject tile in tileList)
+        {   
             Vector3 sobstitutePosition = tile.transform.position;
+            
+            //if the tile in tilelist has the same position of the tile that needs to be removed
             if (postionsToDestroy.Contains(sobstitutePosition))
             {
-                Player tileScript = tile.GetComponent<Player>();
-                int tileValue = tileScript.tileValue;
+                int tileValue = tile.GetComponent<Player>().tileValue;
                 int nextIndex = System.Array.IndexOf(tileValueScale, tileValue)+1;
-
-                Destroy(tile);
 
                 GameObject tile1 = Instantiate(tileObjectScale[nextIndex]);
                 tile1.transform.position = sobstitutePosition;
 
-                Player newTile = tile1.GetComponent<Player>();
-                newTile.tileValue = tileValueScale[nextIndex];
-                boardManager.occupyPosition(sobstitutePosition, tileValueScale[nextIndex]);
+                //position is occupied by the new tile with the next value
+                boardManagerObject.GetComponent<BoardManager>().occupyPosition(sobstitutePosition, tileValueScale[nextIndex]);
 
                 tilesToRemove.Add(tile);
                 mergedTiles.Add(tile1);
@@ -352,7 +357,15 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-        foreach(GameObject tile in mergedTiles)
+
+        //tiles to remove after merging are removed
+        foreach (GameObject tile in tilesToRemove)
+        {
+            tileList.Remove(tile);
+            Destroy(tile);
+        }
+
+        foreach (GameObject tile in mergedTiles)
         {
             tileList.Add(tile);
         }
