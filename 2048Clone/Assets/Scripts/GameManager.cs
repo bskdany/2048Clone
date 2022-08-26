@@ -319,9 +319,7 @@ public class GameManager : MonoBehaviour
             tileList.Remove(tile);
             Destroy(tile);
         }
-
-        
-
+  
         int a = 0;
         foreach (Vector3 b in postionsToDestroy)
         {
