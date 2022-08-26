@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         tileObjectScale = new GameObject[] { tile2, tile4, tile8, tile16, tile32, tile64, tile128, tile256, tile512, tile1024, tile2048 };
-        int randomNumber = Random.Range(0, 1);
+        int randomNumber = Random.Range(0, 2);
         if(randomNumber == 0)
         {
             spawnTile(tile2);
@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
                     mergeTiles();
 
                     //new tile is spawned
-                    int randomNumber = Random.Range(0, 1);
+                    int randomNumber = Random.Range(0, 2);
                     if (randomNumber == 0)
                     {
                         spawnTile(tile2);
